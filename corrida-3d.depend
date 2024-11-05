@@ -993,13 +993,17 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1730160146 source:d:\codeblockscode\corrida-3d\main.cpp
+1730767086 source:d:\codeblockscode\corrida-3d\main.cpp
 	<GL/glew.h>
 	<GLFW/glfw3.h>
-	<stb_image.h>
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<math.h>
 	<glm/glm.hpp>
 	<glm/gtc/matrix_transform.hpp>
 	<glm/gtc/type_ptr.hpp>
+	<stb_image.h>
 	<Shader.h>
 	<iostream>
 
