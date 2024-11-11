@@ -19,6 +19,8 @@ void checkProgramLinkStatus(GLuint program);
 void processInput(GLFWwindow *window, float *x, float *y, float *z);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
+void moveCar(int *curva, float *carPosX, float *carPosZ);
+
 // Shaders (cada objeto terá um shader próprio)
 const char* vertexShaderSource = "#version 330 core\n"
     "layout(location = 0) in vec3 position;\n"
@@ -57,53 +59,64 @@ float groundVertices[] = {
 };
 
 float cubeVertices[] = {
-    -0.5f, 0.0f, -0.5f,  // fundo
-     0.5f, 0.0f, -0.5f,
-     0.5f,  0.5f, -0.5f,
-     0.5f,  0.5f, -0.5f,
-    -0.5f,  0.5f, -0.5f,
-    -0.5f, 0.0f, -0.5f,
+    //Traseira
+    -0.5f, 0.0f, 0.5f, 0.0f, 0.5f,
+     0.5f, 0.0f, 0.5f, 0.25f, 0.5f,
+     0.5f, 0.5f, 0.5f, 0.25f, 0.75f,
+     0.5f, 0.5f, 0.5f, 0.25f, 0.75f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 0.75f,
+    -0.5f, 0.0f, 0.5f, 0.0f, 0.5f,
 
-    -0.5f, 0.0f,  0.5f,  // frente
-     0.5f, 0.0f,  0.5f,
-     0.5f,  0.5f,  0.5f,
-     0.5f,  0.5f,  0.5f,
-    -0.5f,  0.5f,  0.5f,
-    -0.5f, 0.0f,  0.5f,
+    //Frontal
+    -0.5f, 0.0f,  1.5f, 0.0f, 0.25f,
+     0.5f, 0.0f,  1.5f, 0.25f, 0.25f,
+     0.5f, 0.5f,  1.5f, 0.25f, 0.5f,
+     0.5f, 0.5f,  1.5f, 0.25f, 0.5f,
+    -0.5f, 0.5f,  1.5f, 0.0f, 0.5f,
+    -0.5f, 0.0f,  1.5f, 0.0f, 0.25f,
 
-    -0.5f,  0.5f,  0.5f,  // lateral esquerda
-    -0.5f,  0.5f, -0.5f,
-    -0.5f, 0.0f, -0.5f,
-    -0.5f, 0.0f, -0.5f,
-    -0.5f, 0.0f,  0.5f,
-    -0.5f,  0.5f,  0.5f,
+    //Lateral Esquerda
+    -0.5f, 0.5f,  1.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 0.25f, 0.0f,
+    -0.5f, 0.0f, 0.5f, 0.25f, 0.25f,
+    -0.5f, 0.0f, 0.5f, 0.25f, 0.25f,
+    -0.5f, 0.0f,  1.5f, 0.0f, 0.25f,
+    -0.5f, 0.5f,  1.5f, 0.0f, 0.0f,
 
-     0.5f,  0.5f,  0.5f,  // lateral direita
-     0.5f,  0.5f, -0.5f,
-     0.5f, 0.0f, -0.5f,
-     0.5f, 0.0f, -0.5f,
-     0.5f, 0.0f,  0.5f,
-     0.5f,  0.5f,  0.5f,
+    //Lateral Direita
+     0.5f, 0.5f, 1.5f, 0.25f, 0.0f,
+     0.5f, 0.5f, 0.5f, 0.5f, 0.0f,
+     0.5f, 0.0f, 0.5f, 0.5f, 0.25f,
+     0.5f, 0.0f, 0.5f, 0.5f, 0.25f,
+     0.5f, 0.0f, 1.5f, 0.25f, 0.25f,
+     0.5f, 0.5f, 1.5f, 0.25f, 0.0f,
 
-    -0.5f, 0.0f, -0.5f,  // fundo
-     0.5f, 0.0f, -0.5f,
-     0.5f, 0.0f,  0.5f,
-     0.5f, 0.0f,  0.5f,
-    -0.5f, 0.0f,  0.5f,
-    -0.5f, 0.0f, -0.5f,
+    //Inferior
+    -0.5f, 0.0f, 0.5f, 0.25f, 0.5f,
+     0.5f, 0.0f, 0.5f, 0.5f, 0.5f,
+     0.5f, 0.0f, 1.5f, 0.5f, 0.75f,
+     0.5f, 0.0f, 1.5f, 0.5f, 0.75f,
+    -0.5f, 0.0f, 1.5f, 0.25f, 0.75f,
+    -0.5f, 0.0f, 0.5f, 0.25f, 0.5f,
 
-    -0.5f,  0.5f, -0.5f,  // topo
-     0.5f,  0.5f, -0.5f,
-     0.5f,  0.5f,  0.5f,
-     0.5f,  0.5f,  0.5f,
-    -0.5f,  0.5f,  0.5f,
-    -0.5f,  0.5f, -0.5f
+    //Superior
+    -0.5f, 0.5f, 0.5f, 0.25f, 0.25f,
+     0.5f, 0.5f, 0.5f, 0.5f, 0.25f,
+     0.5f, 0.5f, 1.5f, 0.5f, 0.5f,
+     0.5f, 0.5f, 1.5f, 0.5f, 0.5f,
+    -0.5f, 0.5f, 1.5f, 0.25f, 0.5f,
+    -0.5f, 0.5f, 0.5f, 0.25f, 0.25f
 };
 
+float factor = 0.001f;
+float carPosX = 0.0f;
+float carPosZ = 0.0f;
 
+int curva = 1;
+
+bool visaoAerea = false;
 
 int main() {
-
    float x = 0.0f;
    float y = 0.0f;
    float z = -5.0f;
@@ -156,15 +169,20 @@ int main() {
     glBindVertexArray(VAOs[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // Atribuir coordenadas de textura
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    Shader ourShader("vertex.glsl", "fragment.glsl");
+    Shader groundShader("vertex.glsl", "fragment.glsl");
+    Shader carShader("vertex.glsl", "fragment.glsl");
+
+    unsigned int groundTexture, carTexture;
 
     //Definindo a textura do chão
-    unsigned int textureToAplicate;
-    glGenTextures(1, &textureToAplicate);
-    glBindTexture(GL_TEXTURE_2D, textureToAplicate);
+    glGenTextures(1, &groundTexture);
+    glBindTexture(GL_TEXTURE_2D, groundTexture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -174,7 +192,7 @@ int main() {
 
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load("res/images/pista2.png", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("res/images/pista3.png", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -186,8 +204,34 @@ int main() {
     }
     stbi_image_free(data);
 
-    ourShader.use();
-    ourShader.setInt("textureToAplicate", 0);
+    groundShader.use();
+    groundShader.setInt("textureToAplicate", 0);
+
+    //Carro
+    glGenTextures(1, &carTexture);
+    glBindTexture(GL_TEXTURE_2D, carTexture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_set_flip_vertically_on_load(true);
+    data = stbi_load("res/images/carro3.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Falha ao carregar a textura" << std::endl;
+    }
+    stbi_image_free(data);
+
+    carShader.use();
+    carShader.setInt("textureToAplicate", 0);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -201,37 +245,58 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Renderizar cada objeto com seu shader
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureToAplicate);
-
-        ourShader.use();
-
         glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         glm::mat4 view          = glm::mat4(1.0f);
         glm::mat4 projection    = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        view  = glm::translate(view, glm::vec3(0.0f, -0.35f, -2.0f));
-        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        //model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 0.5f, 0.0f));
+        if(visaoAerea){
+            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -6.0f));
+            projection = glm::perspective(glm::radians(90.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        } else {
+            model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.5f, 0.0f));
+            view  = glm::translate(view, glm::vec3(0.5f, -1.75f, -6.35f));
+            projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        }
+
+
+        glActiveTexture(GL_TEXTURE0);
 
         // Solo
-        unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
-        unsigned int viewLoc  = glGetUniformLocation(ourShader.ID, "view");
+        glBindTexture(GL_TEXTURE_2D, groundTexture);
+        groundShader.use();
+
+        unsigned int modelLoc = glGetUniformLocation(groundShader.ID, "model");
+        unsigned int viewLoc  = glGetUniformLocation(groundShader.ID, "view");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
-        ourShader.setMat4("projection", projection);
+        groundShader.setMat4("projection", projection);
         glBindVertexArray(VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Cubo
-        glUseProgram(shaderCar);
 
+        // Carro
+        // Bind da textura e shader
+        glBindTexture(GL_TEXTURE_2D, carTexture);
+        carShader.use();
+
+
+        // Mover o carro
+        moveCar(&curva, &carPosX, &carPosZ);
+        model = glm::translate(model, glm::vec3(carPosX, 0.0f, carPosZ));
+        //Aplicar escala de 20% no tamanho do carro
         model = glm::scale(model, glm::vec3(0.2f));
 
-        glUniformMatrix4fv(glGetUniformLocation(shaderCar, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(glGetUniformLocation(shaderCar, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(shaderCar, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        // Configuração das matrizes no shader
+        modelLoc = glGetUniformLocation(carShader.ID, "model");
+        viewLoc  = glGetUniformLocation(carShader.ID, "view");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+        carShader.setMat4("projection", projection);
         glBindVertexArray(VAOs[1]);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
 
         // Trocar os buffers da janela
         glfwSwapBuffers(window);
@@ -339,4 +404,123 @@ void processInput(GLFWwindow *window, float *x, float *y, float *z)
         *z = -5.0f;
         printf("RESET\n(%.3f,%.3f,%.3f\n", *x, *y, *z);
     }
+}
+
+void moveCar(int *curvaOriginal, float *carPosXOriginal, float *carPosZOriginal){
+    int curva = *curvaOriginal;
+    float carPosX = *carPosXOriginal, carPosZ = *carPosZOriginal;
+
+    //std::cout << "X: " << carPosX * factor << " Z: " << carPosZ << std::endl;
+    switch (curva) {
+        case 1:
+            carPosX -= 1.0f * factor;
+            if (carPosX <= -2.5f) {
+                curva = 2;
+            }
+            break;
+
+        case 2:
+            carPosZ -= 1.0f * factor;
+            if (carPosZ <= -2.405f) {
+                curva = 3;
+            }
+            break;
+
+        case 3:
+            carPosX += 1.0f * factor;
+            if (carPosX >= -1.5f) {
+                curva = 4;
+            }
+            break;
+
+        case 4:
+            carPosZ += 1.0f * factor;
+            if (carPosZ >= -1.925f) {
+                curva = 5;
+            }
+            break;
+
+        case 5:
+            carPosZ += 1.0f * factor;
+            carPosX -= 0.5f * factor;
+            if (carPosX <= -1.895f && carPosZ >= -1.135f) {
+                curva = 6;
+            }
+            break;
+
+        case 6:
+            carPosZ += 0.5f * factor;
+            carPosX += 1.0f * factor;
+            if (carPosX >= -1.185f && carPosZ >= -0.78f) {
+                curva = 7;
+            }
+            break;
+
+        case 7:
+            carPosZ -= 1.0f * factor;
+            carPosX += 0.5f * factor;
+            if (carPosX >= -0.495f && carPosZ <= -2.16f) {
+                curva = 8;
+            }
+            break;
+
+        case 8:
+            carPosX += 1.0f * factor;
+            if (carPosX >= 0.05f) {
+                curva = 9;
+            }
+            break;
+
+        case 9:
+            carPosZ += 1.0f * factor;
+            if (carPosZ >= -0.85f) {
+                curva = 10;
+            }
+            break;
+
+        case 10:
+            carPosX += 1.0f * factor;
+            if (carPosX >= 1.05f) {
+                curva = 11;
+            }
+            break;
+
+        case 11:
+            carPosZ -= 1.0f * factor;
+            if (carPosZ <= -2.05f) {
+                curva = 12;
+            }
+            break;
+
+        case 12:
+            carPosX += 1.0f * factor;
+            if (carPosX >= 1.85f) {
+                curva = 13;
+            }
+            break;
+
+        case 13:
+            carPosZ += 1.0f * factor;
+            if (carPosZ >= 1.5f) {
+                curva = 14;
+            }
+            break;
+
+        case 14:
+            carPosX -= 1.0f * factor;
+            if (carPosX <= 1.075f) {
+                curva = 15;
+            }
+            break;
+
+        case 15:
+            carPosZ -= 1.0f * factor;
+            if (carPosZ <= 0.0f) {
+                curva = 1;
+            }
+            break;
+    }
+
+    *curvaOriginal = curva;
+    *carPosXOriginal = carPosX, *carPosZOriginal = carPosZ;
 }
