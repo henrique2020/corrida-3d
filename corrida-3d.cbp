@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/corrida-3d.cbp" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/corrida-3d" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -24,17 +24,17 @@
 					<Add option="-lSDL2" />
 					<Add option="-lSDL2main" />
 					<Add option="-lmingw32" />
-					<Add directory="D:/CodeBlocksLibrary/SDL2/lib" />
 					<Add library="D:/CodeBlocksLibrary/glfw-3.4.bin.WIN64/lib-mingw-w64/libglfw3.a" />
 					<Add library="D:/CodeBlocksLibrary/glfw-3.4.bin.WIN64/lib-mingw-w64/libglfw3dll.a" />
 					<Add library="D:/CodeBlocks/MinGW/x86_64-w64-mingw32/lib/libgdi32.a" />
 					<Add library="D:/CodeBlocks/MinGW/x86_64-w64-mingw32/lib/libopengl32.a" />
 					<Add library="D:/CodeBlocksLibrary/glew-2.1.0/lib/Release/x64/glew32.lib" />
 					<Add library="D:/CodeBlocksLibrary/glew-2.1.0/lib/Release/x64/glew32s.lib" />
+					<Add directory="D:/CodeBlocksLibrary/SDL2/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/corrida-3d.cbp" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/corrida-3d" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -54,6 +54,8 @@
 		<Unit filename="include/Shader.h" />
 		<Unit filename="include/stb_image.cpp" />
 		<Unit filename="include/stb_image.h" />
+		<Unit filename="include/vertices.cpp" />
+		<Unit filename="include/vertices.h" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

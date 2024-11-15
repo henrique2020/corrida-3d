@@ -993,7 +993,7 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1731284422 source:d:\codeblockscode\corrida-3d\main.cpp
+1731683169 source:d:\codeblockscode\corrida-3d\main.cpp
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<stdio.h>
@@ -1006,6 +1006,7 @@
 	<stb_image.h>
 	<Shader.h>
 	<iostream>
+	<vertices.h>
 
 1729555572 d:\codeblockscode\corrida-3d\include\shader.h
 	<GL/glew.h>
@@ -1014,4 +1015,10 @@
 	<fstream>
 	<sstream>
 	<iostream>
+
+1731680861 source:d:\codeblockscode\corrida-3d\include\vertices.cpp
+	"vertices.h"
+
+1731680897 d:\codeblockscode\corrida-3d\include\vertices.h
+	<vector>
 
