@@ -93,7 +93,7 @@ float rotation = 0.0f;
 
 int curva = 1;
 
-bool visaoAerea = true;
+bool visaoAerea = false;
 
 int main() {
    float x = 0.0f;
