@@ -27,66 +27,10 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // Dados dos objetos (chao e carro)
-float groundVertices[] = {
-    -3.0f,  0.0f, -3.0f,  0.0f, 1.0f,
-     3.0f,  0.0f, -3.0f,  1.0f, 1.0f,
-     3.0f,  0.0f,  3.0f,  1.0f, 0.0f,
-     3.0f,  0.0f,  3.0f,  1.0f, 0.0f,
-    -3.0f,  0.0f,  3.0f,  0.0f, 0.0f,
-    -3.0f,  0.0f, -3.0f,  0.0f, 1.0f
-};
+std::vector<float> groundVertices = generateVerticesGround();
+std::vector<float> cubeVertices = generateVerticesCar();
 
-float cubeVertices[] = {
-    // Frontal
-    -1.0f,  0.0f,  0.5f,  0.0f,  0.0f,
-    -1.0f,  0.5f,  0.5f,  0.0f,  0.25f,
-    -1.0f,  0.5f,  1.5f,  0.25f, 0.25f,
-    -1.0f,  0.0f,  0.5f,  0.0f,  0.0f,
-    -1.0f,  0.5f,  1.5f,  0.25f, 0.25f,
-    -1.0f,  0.0f,  1.5f,  0.25f, 0.0f,
-
-    // Traseira
-     1.0f,  0.0f,  0.5f,  0.25f, 0.0f,
-     1.0f,  0.5f,  0.5f,  0.25f, 0.25f,
-     1.0f,  0.5f,  1.5f,  0.5f,  0.25f,
-     1.0f,  0.0f,  0.5f,  0.25f, 0.0f,
-     1.0f,  0.5f,  1.5f,  0.5f,  0.25f,
-     1.0f,  0.0f,  1.5f,  0.5f,  0.0f,
-
-    // Lateral Direita
-    -1.0f,  0.0f,  0.5f,  0.5f,  0.0f,
-    -1.0f,  0.5f,  0.5f,  0.5f,  0.25f,
-     1.0f,  0.5f,  0.5f,  1.0f,  0.25f,
-    -1.0f,  0.0f,  0.5f,  0.5f,  0.0f,
-     1.0f,  0.5f,  0.5f,  1.0f,  0.25f,
-     1.0f,  0.0f,  0.5f,  1.0f,  0.0f,
-
-    // Lateral Esquerda
-    -1.0f,  0.0f,  1.5f,  0.5f,  0.0f,
-    -1.0f,  0.5f,  1.5f,  0.5f,  0.25f,
-     1.0f,  0.5f,  1.5f,  1.0f,  0.25f,
-    -1.0f,  0.0f,  1.5f,  0.5f,  0.0f,
-     1.0f,  0.5f,  1.5f,  1.0f,  0.25f,
-     1.0f,  0.0f,  1.5f,  1.0f,  0.0f,
-
-    // Inferior
-    -1.0f,  0.0f,  0.5f,  0.5f,  0.5f,
-     1.0f,  0.0f,  0.5f,  1.0f,  0.5f,
-     1.0f,  0.0f,  1.5f,  1.0f,  1.0f,
-    -1.0f,  0.0f,  0.5f,  0.5f,  0.5f,
-     1.0f,  0.0f,  1.5f,  1.0f,  1.0f,
-    -1.0f,  0.0f,  1.5f,  1.0f,  0.5f,
-
-    // Superior
-    -1.0f,  0.5f,  1.5f,  0.0f,  0.25f,
-    -1.0f,  0.5f,  0.5f,  0.0f,  0.5f,
-     1.0f,  0.5f,  0.5f,  0.5f,  0.5f,
-    -1.0f,  0.5f,  1.5f,  0.0f,  0.25f,
-     1.0f,  0.5f,  0.5f,  0.5f,  0.5f,
-     1.0f,  0.5f,  1.5f,  0.5f,  0.25f
-};
-
-float factor = 0.0005f;
+float factor = 0.0008f;
 float carPosX = 0.0f;
 float carPosZ = 0.0f;
 float rotation = 0.0f;
@@ -134,7 +78,7 @@ int main() {
     // Solo
     glBindVertexArray(VAOs[0]);
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, groundVertices.size() * sizeof(groundVertices), groundVertices.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // Atribuir coordenadas de textura
@@ -144,7 +88,7 @@ int main() {
     // Cubo
     glBindVertexArray(VAOs[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(cubeVertices), cubeVertices.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // Atribuir coordenadas de textura
@@ -170,7 +114,6 @@ int main() {
 
         // Limpar a tela
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
         glm::mat4 model         = glm::mat4(1.0f);
         glm::mat4 view          = glm::mat4(1.0f);
@@ -298,6 +241,14 @@ void processInput(GLFWwindow *window, float *x, float *y, float *z) {
         *y = 0.0f;
         *z = -5.0f;
         printf("RESET\n(%.3f,%.3f,%.3f\n", *x, *y, *z);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+        visaoAerea = true;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        visaoAerea = false;
     }
 }
 
