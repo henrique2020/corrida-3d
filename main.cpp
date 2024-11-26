@@ -31,11 +31,11 @@
     float carSpeed = 0.0005f;
     float rotateSpeed = 0.05f;
 
-    float carPosX = 0.0f;
-    float carPosZ = 0.0f;
+    float carPosX = 1.05f;
+    float carPosZ = 1.85f;
     float rotation = 0.0f;
 
-    int visao = 2;
+    int visao = 1;
 
     int main() {
         // Inicializar GLFW
@@ -93,7 +93,7 @@
         Shader carShader("vertex.glsl", "fragment.glsl");
 
         unsigned int
-            groundTexture = loadTexture("res/images/pista.png"),
+            groundTexture = loadTexture("res/images/pista-quadrada.png"),
             carTexture = loadTexture("res/images/kombi.png");
 
         glEnable(GL_DEPTH_TEST);
@@ -118,7 +118,7 @@
                 projection  = glm::perspective(glm::radians(90.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
             } else if (visao == 1) {    //Visão em diagonal
                 model       = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.5f, 0.0f));
-                view        = glm::translate(view, glm::vec3(0.5f, -1.75f, -6.35f));
+                view        = glm::translate(view, glm::vec3(0.5f, -1.75f, -7.5f));
                 projection  = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
             } else if (visao = 3) {     //Visão seguindo o carro
                 glm::vec3 cameraOffset(0.0f, 1.5f, 4.0f);
@@ -150,14 +150,9 @@
             // Bind da textura e shader
             glBindTexture(GL_TEXTURE_2D, carTexture);
             carShader.use();
-            // Mover o carro
-
             model = glm::translate(model, glm::vec3(carPosX, 0.0f, carPosZ));
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-
-            //Aplicar escala de 20% no tamanho do carro
             model = glm::scale(model, glm::vec3(0.2f));
-            // Configuração das matrizes no shader
             modelLoc = glGetUniformLocation(carShader.ID, "model");
             viewLoc  = glGetUniformLocation(carShader.ID, "view");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -196,8 +191,7 @@
         }
     }
 
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-    {
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
         // make sure the viewport matches the new window dimensions; note that width and
         // height will be significantly larger than specified on retina displays.
         glViewport(0, 0, width, height);
@@ -205,33 +199,67 @@
 
     // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
     // ---------------------------------------------------------------------------------------------------------
-    void processInput(GLFWwindow *window){
+    void processInput(GLFWwindow *window) {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        // Movimento para frente e para trás
+        // Movimento do carro
+        bool keyPress = false;
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            carPosZ += carSpeed * sin(glm::radians(rotation)); // Move na direção da rotação
+            carPosZ += carSpeed * sin(glm::radians(rotation));
             carPosX -= carSpeed * cos(glm::radians(rotation));
+            keyPress = true;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
             carPosZ -= carSpeed * sin(glm::radians(rotation));
             carPosX += carSpeed * cos(glm::radians(rotation));
+            keyPress = true;
         }
-
-        // Rotação para esquerda e direita
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             rotation += rotateSpeed; // Gira para a esquerda
-            if (rotation >= 360.0f) rotation = 0.0f;
+            if (rotation > 360.0f) rotation = 0.0f;
+            keyPress = true;
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
             rotation -= rotateSpeed; // Gira para a direita
             if (rotation < 0.0f) rotation = 360.0f;
+            keyPress = true;
         }
 
-        //printf("Angulo: %.2f, PosX: %.2f, PosZ: %.2f\n", *rotation, *carPosX,*carPosZ);
+        if(keyPress) {
+            std::cout << "Angulo: " << rotation << ", PosX: " << carPosX << ", PosZ: " << carPosZ << std::endl;
+            keyPress = false;
+        }
 
+        //Ajuste da velocidade e rotação
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+            carSpeed += 0.00001f;
+            keyPress = true;
+        } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            if (carSpeed > 0.0f){
+                carSpeed -= 0.00001f;
+                keyPress = true;
+            } else {
+                carSpeed = 0.0f;
+            }
+        } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            rotateSpeed += 0.001f;
+            keyPress = true;
+        } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            if (rotateSpeed > 0.0f){
+                rotateSpeed -= 0.001f;
+                keyPress = true;
+            } else {
+                rotateSpeed = 0.0f;
+            }
+        }
 
+        if(keyPress) {
+            std::cout << "Veolcidade do movimento: " << carSpeed << ", Velocidade da rotação: " << rotateSpeed << std::endl;
+            keyPress = false;
+        }
+
+        //Definição do tipo de visão
         if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
             visao = 0;
         } else if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
