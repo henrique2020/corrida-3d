@@ -94,7 +94,7 @@
 
         unsigned int
             groundTexture = loadTexture("res/images/pista-quadrada.png"),
-            carTexture = loadTexture("res/images/kombi.png");
+            carTexture = loadTexture("res/images/onibus.png");
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
@@ -215,15 +215,13 @@
             carPosX += carSpeed * cos(glm::radians(rotation));
             keyPress = true;
         }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && keyPress) {
             rotation += rotateSpeed; // Gira para a esquerda
             if (rotation > 360.0f) rotation = 0.0f;
-            keyPress = true;
         }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && keyPress) {
             rotation -= rotateSpeed; // Gira para a direita
             if (rotation < 0.0f) rotation = 360.0f;
-            keyPress = true;
         }
 
         if(keyPress) {
@@ -242,7 +240,8 @@
             } else {
                 carSpeed = 0.0f;
             }
-        } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
             rotateSpeed += 0.001f;
             keyPress = true;
         } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
