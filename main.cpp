@@ -44,11 +44,25 @@
             return -1;
         }
 
+        //Adquirindo as propriedades do monitor principal
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Pista de corrida 3D", NULL, NULL);
+        GLFWwindow* window = NULL;
+
+        //Tela cheia sem bordas
+        window = glfwCreateWindow(mode->width, mode->height, "Pista de corrida 3D", monitor, NULL);
+        //Tela reduzida
+        //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Pista de corrida 3D", NULL, NULL);
+
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
         if (!window) {
