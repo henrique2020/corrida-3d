@@ -12,6 +12,22 @@
     #include <iostream>
     #include <vertices.h>
 
+    #define CS 0.0005f
+    #define RS 0.05f
+    #define CPX 1.05f
+    #define CPZ 1.85f
+    #define R 0.0f
+    #define V 2
+    #define WINDOW false
+
+    /*
+    W, A, S, D: move o carro
+    ←, →: altera a velocidade de rotação
+    ↑, ↓: altera a velocidade do carro
+    I, O, P: muda a visão
+    ESPAÇO: reinicia as variáveis
+    */
+
     // Funções para compilar shaders
     void checkShaderCompileStatus(GLuint shader);
     void checkProgramLinkStatus(GLuint program);
@@ -28,14 +44,12 @@
     std::vector<float> groundVertices = generateVerticesGround();
     std::vector<float> cubeVertices = generateVerticesCar();
 
-    float carSpeed = 0.0005f;
-    float rotateSpeed = 0.05f;
-
-    float carPosX = 1.05f;
-    float carPosZ = 1.85f;
-    float rotation = 0.0f;
-
-    int visao = 1;
+    float carSpeed = CS;
+    float rotateSpeed = RS;
+    float carPosX = CPX;
+    float carPosZ = CPZ;
+    float rotation = R;
+    int visao = V;
 
     int main() {
         // Inicializar GLFW
@@ -44,24 +58,24 @@
             return -1;
         }
 
-        //Adquirindo as propriedades do monitor principal
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         GLFWwindow* window = NULL;
+        if(!WINDOW){ //Tela cheia sem bordas
+            //Adquirindo as propriedades do monitor principal
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+            glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+            glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+            glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-        //Tela cheia sem bordas
-        window = glfwCreateWindow(mode->width, mode->height, "Pista de corrida 3D", monitor, NULL);
-        //Tela reduzida
-        //window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Pista de corrida 3D", NULL, NULL);
+            window = glfwCreateWindow(mode->width, mode->height, "Pista de corrida 3D", monitor, NULL);
+        } else { //Tela reduzida
+            window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Pista de corrida 3D", NULL, NULL);
+        }
 
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -239,7 +253,7 @@
         }
 
         if(keyPress) {
-            std::cout << "Angulo: " << rotation << ", PosX: " << carPosX << ", PosZ: " << carPosZ << std::endl;
+            //std::cout << "Angulo: " << rotation << ", PosX: " << carPosX << ", PosZ: " << carPosZ << std::endl;
             keyPress = false;
         }
 
@@ -256,11 +270,11 @@
             }
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            rotateSpeed += 0.001f;
+            rotateSpeed += 0.0001f;
             keyPress = true;
         } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
             if (rotateSpeed > 0.0f){
-                rotateSpeed -= 0.001f;
+                rotateSpeed -= 0.0001f;
                 keyPress = true;
             } else {
                 rotateSpeed = 0.0f;
@@ -268,7 +282,7 @@
         }
 
         if(keyPress) {
-            std::cout << "Veolcidade do movimento: " << carSpeed << ", Velocidade da rotação: " << rotateSpeed << std::endl;
+            //std::cout << "Veolcidade do movimento: " << carSpeed << ", Velocidade da rotação: " << rotateSpeed << std::endl;
             keyPress = false;
         }
 
@@ -279,6 +293,16 @@
             visao = 1;
         } else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
             visao = 2;
+        }
+
+        //Reseta as váriaveis
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            carSpeed = CS;
+            rotateSpeed = RS;
+            carPosX = CPX;
+            carPosZ = CPZ;
+            rotation = R;
+            visao = V;
         }
     }
 
