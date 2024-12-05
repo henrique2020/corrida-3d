@@ -5,5 +5,6 @@
 
 std::vector<float> generateVerticesGround();
 std::vector<float> generateVerticesCar();
+std::vector<float> generateVerticesLighting();
 
 #endif // VERTICES_H_INCLUDED

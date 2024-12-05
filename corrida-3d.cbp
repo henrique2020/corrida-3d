@@ -57,6 +57,8 @@
 		<Unit filename="include/vertices.cpp" />
 		<Unit filename="include/vertices.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="shader_m.h" />
+		<Unit filename="camera.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
